@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import { Analytics } from "@vercel/analytics/react"
 
 export async function POST(request: Request) {
   const { name, email, message } = await request.json();
