@@ -1,4 +1,3 @@
-// filepath: c:\Users\z004v3ah\Desktop\project\my_portfolio\my-portfolio\src\app\api\contact\route.ts
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
