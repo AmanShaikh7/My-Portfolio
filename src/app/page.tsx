@@ -1,103 +1,379 @@
-import Image from "next/image";
+// src/app/page.tsx
+
+'use client';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [command, setCommand] = useState("");
+  const [output, setOutput] = useState<string[]>([]);
+  const [navOpen, setNavOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  // Add initial terminal output on page load
+  useEffect(() => {
+    setOutput([
+      "Initializing terminal...",
+      "Welcome to ~/my-portfolio!",
+      "Type 'help' to see available commands.",
+    ]);
+  }, []);
+
+  const handleCommand = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (command === "ls") {
+      setOutput((prev) => [...prev, "projects  resume.pdf"]);
+    } else if (command === "cat resume.pdf") {
+      setOutput((prev) => [...prev, "Opening resume..."]);
+      window.open("/resume.pdf", "_blank");
+    } else if (command === "cat projects") {
+      setOutput((prev) => [
+        ...prev,
+        "Project 1: E-Commerce Web Application",
+        "Project 2: Portfolio Website",
+        "Project 3: AI Resume Optimizer (Still Cooking)",
+      ]);
+    } else if (command === "clear") {
+      setOutput([]);
+    } else if (command === "contact") {
+      setOutput((prev) => [
+        ...prev,
+        "Contact Me:",
+        "Email: amanshaikh5595@google.com",
+        "LinkedIn: https://www.linkedin.com/in/aman-shaikh7/",
+        "GitHub: https://github.com/your-profile",
+      ]);
+    } else if (command === "exit") {
+      setOutput((prev) => [...prev, "Goodbye! Have a great day!"]);
+      setTimeout(() => setOutput([]), 2000);
+    }else if (command === "help") {
+      setOutput((prev) => [
+        ...prev,
+        "Available commands:",
+        "******************",
+        "ls - List files",
+        "cat [file] - View file content",
+        "clear - Clear the terminal",
+        "contact - Show contact information",
+        "cat projects - List projects",
+        "exit - Exit the terminal",
+        "help - Show this help message",
+      ]);
+    } else {
+      setOutput((prev) => [...prev, `Command not found: ${command}`]);
+    }
+    setCommand("");
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = { name, email, message };
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("Message sent successfully!");
+        setName("");
+        setEmail("");
+        setMessage("");
+      } else {
+        alert("Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred. Please try again later.");
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-black text-green-400 font-mono p-6">
+      {/* Header Section */}
+      <motion.div
+        id="about"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="max-w-4xl mx-auto text-left">
+          <pre className="text-green-300 text-lg">
+            {`Welcome to `}
+            <span className="text-green-500">~/my-portfolio</span>
+            {`!`}
+            <span className="blinking-cursor">|</span>
+          </pre>
+          <h1 className="text-4xl md:text-6xl font-extrabold mt-4">
+            Hello, I'm <span className="text-green-500">Aman Shaikh</span>
+          </h1>
+          <p className="text-lg md:text-xl text-green-200 mt-2 text-center">
+        Software Engineer • AI Enthusiast • Lifelong Learner
+      </p>
+        </div>
+      </motion.div>
+      {/* Floating Navigation Button */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <button
+          onClick={() => setNavOpen(!navOpen)}
+          className="bg-green-500 text-black px-4 py-2 rounded-full shadow-lg hover:bg-green-600"
+        >
+          {navOpen ? "Close Menu" : "Menu"}
+        </button>
+        {navOpen && (
+          <div className="absolute bottom-16 right-0 bg-gray-900 text-gray-300 p-4 rounded-lg shadow-md">
+            <a href="#about" className="block hover:text-green-400 transition-colors">About</a>
+            <a href="#projects" className="block hover:text-green-400 transition-colors">Projects</a>
+            <a href="#skills" className="block hover:text-green-400 transition-colors">Skills</a>
+            <a href="#experience" className="block hover:text-green-400 transition-colors">Experience</a>
+            <a href="#contact" className="block hover:text-green-400 transition-colors">Contact</a>
+          </div>
+        )}
+      </div>
+    
+      {/* Fake Terminal */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mt-10 bg-gray-900 p-4 rounded-lg shadow-lg border border-green-500"
+      >
+        <div className="terminal-output text-green-300">
+          {output.map((line, index) => (
+            <div key={index}>{line}</div>
+          ))}
+        </div>
+        <form onSubmit={handleCommand} className="mt-4">
+          <span className="text-green-500">~/my-portfolio $</span>{" "}
+          <input
+            type="text"
+            value={command}
+            onChange={(e) => setCommand(e.target.value)}
+            className="bg-black text-green-400 border-none outline-none w-3/4"
+            autoFocus
+          />
+        </form>
+      </motion.section>
+      {/* Projects Section */}
+      <motion.section
+        id="projects"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto py-12"
+      >
+        <h2 className="text-3xl md:text-4xl font-bold text-teal-400 text-center mb-8">
+          Projects
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Project 1 */}
+          <div className="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-teal-400 transition-shadow">
+            <h3 className="text-2xl font-bold text-teal-400 mb-4">🛒 E-Commerce Web Application</h3>
+            <p className="text-gray-300">
+              A full-featured e-commerce backend application developed using Spring Boot and Java, designed to deliver a seamless shopping experience for users and a scalable platform for managing products and orders.
+            </p>
+            
+            <h4 className="text-teal-400 font-semibold mt-4">🔑 Key Features:</h4>
+            <ul className="list-disc list-inside text-gray-400 mt-2 space-y-1">
+              <li><span className="font-semibold text-gray-300">User Management:</span> Secure APIs for user registration, login, and profile management.</li>
+              <li><span className="font-semibold text-gray-300">Product Listings:</span> Dynamic product catalog with CRUD operations.</li>
+              <li><span className="font-semibold text-gray-300">Order Processing:</span> End-to-end workflow including cart management and checkout.</li>
+              <li><span className="font-semibold text-gray-300">Real-time Email Notifications:</span> Automated email system for order updates.</li>
+              <li><span className="font-semibold text-gray-300">Database Optimization:</span> JPA with Hibernate for efficient data access and MySQL as the backend.</li>
+              <li><span className="font-semibold text-gray-300">API Documentation:</span> Integrated Swagger for interactive API documentation.</li>
+              <li><span className="font-semibold text-gray-300">Team Collaboration:</span> Worked in a team environment to meet deadlines and maintain code quality.</li>
+            </ul>
+
+            <p className="text-gray-300 mt-4">
+              This project strengthened my understanding of backend development and enhanced my skills in building scalable, maintainable APIs.
+            </p>
+
+            <p className="text-sm text-gray-500 mt-4">Technologies: Spring Boot, Java, Hibernate, MySQL</p>
+            <a
+              href="https://github.com/AmanShaikh7/Amazon_Mart"
+              target="_blank"
+              className="text-teal-400 hover:underline mt-4 inline-block"
+            >
+              View on GitHub
+            </a>
+          </div>
+
+          {/* Project 2 */}
+          <div className="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-teal-400 transition-shadow">
+            <h3 className="text-2xl font-bold text-teal-400 mb-4">🌐 Personal Portfolio Website</h3>
+            <p className="text-gray-300">
+              A modern and interactive personal portfolio website designed to showcase my skills, projects, and professional experience. Built with a focus on responsive design, smooth animations, and user-friendly navigation.
+            </p>
+            
+            <h4 className="text-teal-400 font-semibold mt-4">🔑 Key Features:</h4>
+            <ul className="list-disc list-inside text-gray-400 mt-2 space-y-1">
+              <li><span className="font-semibold text-gray-300">Interactive Terminal:</span> A unique terminal interface for user interaction.</li>
+              <li><span className="font-semibold text-gray-300">Responsive Design:</span> Fully optimized for desktop, tablet, and mobile devices.</li>
+              <li><span className="font-semibold text-gray-300">Smooth Animations:</span> Leveraging Framer Motion for seamless transitions and animations.</li>
+              <li><span className="font-semibold text-gray-300">Dynamic Sections:</span> Includes sections for About, Projects, Skills, Experience, and Contact.</li>
+              <li><span className="font-semibold text-gray-300">Tailwind CSS:</span> Utilized for rapid styling and consistent design.</li>
+              <li><span className="font-semibold text-gray-300">GitHub Integration:</span> Links to GitHub repositories for easy access to project source code.</li>
+            </ul>
+
+            <p className="text-gray-300 mt-4">
+              This project demonstrates my ability to design and develop visually appealing and functional web applications while maintaining clean and maintainable code.
+            </p>
+
+            <p className="text-sm text-gray-500 mt-4">Technologies: React, Next.js, Tailwind CSS, Framer Motion</p>
+            <a
+              href=""
+              target="_blank"
+              className="text-teal-400 hover:underline mt-4 inline-block"
+            >
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      </motion.section>
+      {/* Skills Section */}
+      <motion.section
+        id="skills"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto py-12 text-center"
+      >
+        <h2 className="text-3xl md:text-4xl font-bold text-green-400 mb-6">Skills</h2>
+        <p className="text-green-300 mb-4">
+          Here are some of the technologies and tools I work with:
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="bg-gray-800 bg-opacity-80 p-4 rounded-lg shadow-md border border-green-500 hover:shadow-green-500 transition-shadow">
+            <p className="text-lg font-semibold text-green-300">Java</p>
+          </div>
+          <div className="bg-gray-800 bg-opacity-80 p-4 rounded-lg shadow-md border border-green-500 hover:shadow-green-500 transition-shadow">
+            <p className="text-lg font-semibold text-green-300">Spring Boot</p>
+          </div>
+          <div className="bg-gray-800 bg-opacity-80 p-4 rounded-lg shadow-md border border-green-500 hover:shadow-green-500 transition-shadow">
+            <p className="text-lg font-semibold text-green-300"> Gen AI</p>
+          </div>
+          <div className="bg-gray-800 bg-opacity-80 p-4 rounded-lg shadow-md border border-green-500 hover:shadow-yellow-500 transition-shadow">
+            <p className="text-lg font-semibold text-green-300">AWS</p>
+          </div>
+          <div className="bg-gray-800 bg-opacity-80 p-4 rounded-lg shadow-md border border-green-500 hover:shadow-green-500 transition-shadow">
+            <p className="text-lg font-semibold text-green-300">Docker</p>
+          </div>
+          <div className="bg-gray-800 bg-opacity-80 p-4 rounded-lg shadow-md border border-green-500 hover:shadow-green-500 transition-shadow">
+            <p className="text-lg font-semibold text-green-300">Python</p>
+          </div>
+          <div className="bg-gray-800 bg-opacity-80 p-4 rounded-lg shadow-md border border-green-500 hover:shadow-green-500 transition-shadow">
+            <p className="text-lg font-semibold text-green-300">CICD Pipelines</p>
+          </div>
+          <div className="bg-gray-800 bg-opacity-80 p-4 rounded-lg shadow-md border border-green-500 hover:shadow-green-500 transition-shadow">
+            <p className="text-lg font-semibold text-green-300">Next.js</p>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Experience Section */}
+      <motion.section
+        id="experience"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto py-12"
+      >
+        <h2 className="text-3xl md:text-4xl font-bold text-teal-400 text-center mb-6">
+          Experience
+        </h2>
+        <div className="space-y-6">
+          {/* Job 1 */}
+          <div className="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-teal-400 transition-shadow">
+            <h3 className="text-xl font-semibold text-gray-100">Software Engineer</h3>
+            <p className="text-gray-400">Siemens Digital Industries Software</p>
+            <p className="text-sm text-gray-500">Aug 2023 – Present</p>
+            <ul className="list-disc list-inside text-gray-300 mt-2 space-y-1">
+              <li>Enhanced <b>Teamcenter X</b>, a cloud-based PLM tool, by automating key features for seamless integration.</li>
+              <li>Developed <b>Java automation scripts</b> to reduce manual setup time by 30 minutes per environment, improving customer convenience by 45%.</li>
+              <li>Designed an <b>uninstall feature</b> for desktop integration, reducing uninstall-related support tickets by 20%.</li>
+              <li>Streamlined <b>CI/CD pipelines</b> with GitLab CI/CD and Terraform, cutting deployment time from 2 hours to 30 minutes.</li>
+              <li>Optimized monitoring for 100+ Kubernetes clusters using <b>Datadog</b> , Rancher, and ArgoCD, reducing incidents by 15%.</li>
+              <li>Automated cloud resource provisioning with <b>Ansible</b> and <b>Terraform</b> , reducing setup time by 40%.</li>
+              <li>Deployed scalable AWS solutions using <b>EC2, S3, RDS, and CloudFormation</b> for enterprise applications.</li>
+              <li>Built a <b>Python automation framework</b> for end-to-end testing, reducing developer testing time by 80%.</li>
+              <li>Wrote a <b>Python script</b> to optimize the size of EC2, RDS, and EBS resources, significantly reducing cloud costs.</li>
+            </ul>
+          </div>
+          {/* Job 2 */}
+          <div className="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-teal-400 transition-shadow">
+            <h3 className="text-xl font-semibold text-gray-100">Software Engineer Intern</h3>
+            <p className="text-gray-400">Resilinc</p>
+            <p className="text-sm text-gray-500">May 2022 - Aug 2022</p>
+            <p className="text-gray-300 mt-2">
+              Assisted in designing and implementing responsive user interfaces using React and Tailwind CSS.
+            </p>
+          </div>
+        </div>
+      </motion.section>
+      {/* Contact Section */}
+      <motion.section
+        id="contact"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto py-12 text-center"
+      >
+        <h2 className="text-3xl md:text-4xl font-bold text-green-400 mb-6">Contact Me</h2>
+        <p className="text-gray-300 mb-4">
+          Feel free to reach out to me for collaborations or just to say hi!
+        </p>
+        <form className="space-y-4" onSubmit={handleContactSubmit}>
+          <input
+            type="text"
+            placeholder="Your Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg"
+          />
+          <input
+            type="email"
+            placeholder="Your Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg"
+          />
+          <textarea
+            placeholder="Your Message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg"
+            rows={4}
+          ></textarea>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+            Send Message
+          </button>
+        </form>
+        <div className="mt-6">
+          <a
+            href="https://www.linkedin.com/in/aman-shaikh7/"
+            target="_blank"
+            className="text-green-400 hover:underline mx-2"
+          >
+            LinkedIn
           </a>
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            href="https://github.com/your-profile"
             target="_blank"
-            rel="noopener noreferrer"
+            className="text-green-400 hover:underline mx-2"
           >
-            Read our docs
+            GitHub
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </motion.section>
+    </main>
   );
 }

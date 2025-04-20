@@ -1,4 +1,30 @@
+
 @import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optional: Add a blinking cursor effect */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out both;
+}
+
 
 :root {
   --background: #ffffff;
@@ -20,7 +46,29 @@
 }
 
 body {
+  
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Blinking Cursor */
+.blinking-cursor {
+  display: inline-block;
+  width: 10px;
+  background-color: green;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ASCII Art Styling */
+.ascii-art {
+  white-space: pre; /* Preserve spacing for ASCII art */
+  font-family: monospace; /* Ensure it looks like terminal text */
+  line-height: 1.2; /* Adjust line height for better spacing */
 }
