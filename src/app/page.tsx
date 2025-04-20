@@ -111,7 +111,7 @@ export default function Home() {
             <span className="blinking-cursor">|</span>
           </pre>
           <h1 className="text-4xl md:text-6xl font-extrabold mt-4">
-            Hello, I'm <span className="text-green-500">Aman Shaikh</span>
+            Hello, I am <span className="text-green-500">Aman Shaikh</span>
           </h1>
           <p className="text-lg md:text-xl text-green-200 mt-2 text-center">
         Software Engineer • AI Enthusiast • Lifelong Learner
@@ -227,7 +227,7 @@ export default function Home() {
 
             <p className="text-sm text-gray-500 mt-4">Technologies: React, Next.js, Tailwind CSS, Framer Motion</p>
             <a
-              href=""
+              href="https://github.com/AmanShaikh7/My-Portfolio/"
               target="_blank"
               className="text-teal-400 hover:underline mt-4 inline-block"
             >
