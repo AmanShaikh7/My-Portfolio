@@ -28,13 +28,27 @@ export default function Home() {
     } else if (command === "cat resume.pdf") {
       setOutput((prev) => [...prev, "Opening resume..."]);
       window.open("/resume.pdf", "_blank");
-    } else if (command === "cat projects") {
+    } else if (command === "ls projects") {
       setOutput((prev) => [
         ...prev,
         "Project 1: E-Commerce Web Application",
         "Project 2: Portfolio Website",
         "Project 3: AI Resume Optimizer (Still Cooking)",
       ]);
+    } else if(command =="cat projects -E-Commerce Web Application"){
+      // open the github link of the project
+      setOutput((prev) => [...prev, "Opening E-Commerce Web Application GitHub repository..."]);
+      window.open("https://github.com/AmanShaikh7/Amazon_Mart", "_blank");
+
+    } else if(command =="cat projects -Portfolio Website"){
+      // open the github link of the project
+      setOutput((prev) => [...prev, "Opening Portfolio Website GitHub repository..."]);
+      window.open("https://github.com/AmanShaikh7/My-Portfolio/");
+    }
+    else if(command =="cat projects -AI Resume Optimizer"){
+      // open the github link of the project
+      setOutput((prev) => [...prev, "This project is still cooking!!!"]);
+
     } else if (command === "clear") {
       setOutput([]);
     } else if (command === "contact") {
@@ -43,7 +57,7 @@ export default function Home() {
         "Contact Me:",
         "Email: amanshaikh5595@google.com",
         "LinkedIn: https://www.linkedin.com/in/aman-shaikh7/",
-        "GitHub: https://github.com/your-profile",
+        "GitHub: https://github.com/AmanShaikh7",
       ]);
     } else if (command === "exit") {
       setOutput((prev) => [...prev, "Goodbye! Have a great day!"]);
@@ -57,7 +71,10 @@ export default function Home() {
         "cat [file] - View file content",
         "clear - Clear the terminal",
         "contact - Show contact information",
-        "cat projects - List projects",
+        "ls projects - List projects",
+        "cat projects -E-Commerce Web Application - View E-Commerce Web Application project - redirected to github if project not hosted",
+        "cat projects -Portfolio Website - View Portfolio Website project - redirected to github if project not hosted",
+        "cat projects -AI Resume Optimizer - View AI Resume Optimizer project",
         "exit - Exit the terminal",
         "help - Show this help message",
       ]);
@@ -294,25 +311,12 @@ export default function Home() {
             <p className="text-gray-400">Siemens Digital Industries Software</p>
             <p className="text-sm text-gray-500">Aug 2023 – Present</p>
             <ul className="list-disc list-inside text-gray-300 mt-2 space-y-1">
-              <li>Enhanced <b>Teamcenter X</b>, a cloud-based PLM tool, by automating key features for seamless integration.</li>
-              <li>Developed <b>Java automation scripts</b> to reduce manual setup time by 30 minutes per environment, improving customer convenience by 45%.</li>
-              <li>Designed an <b>uninstall feature</b> for desktop integration, reducing uninstall-related support tickets by 20%.</li>
-              <li>Streamlined <b>CI/CD pipelines</b> with GitLab CI/CD and Terraform, cutting deployment time from 2 hours to 30 minutes.</li>
-              <li>Optimized monitoring for 100+ Kubernetes clusters using <b>Datadog</b> , Rancher, and ArgoCD, reducing incidents by 15%.</li>
-              <li>Automated cloud resource provisioning with <b>Ansible</b> and <b>Terraform</b> , reducing setup time by 40%.</li>
+            <li>Designed and Built a <b>Python automation framework</b> for end-to-end testing using Selenium for web automation and Pywinauto for desktop application automation</li>
+              <li>Worked on entire <b>CI/CD pipelines</b> with GitLab CI/CD</li>
               <li>Deployed scalable AWS solutions using <b>EC2, S3, RDS, and CloudFormation</b> for enterprise applications.</li>
-              <li>Built a <b>Python automation framework</b> for end-to-end testing, reducing developer testing time by 80%.</li>
               <li>Wrote a <b>Python script</b> to optimize the size of EC2, RDS, and EBS resources, significantly reducing cloud costs.</li>
+              <li>Automated cloud resource provisioning with <b>Ansible</b>, <b>gitlab CI/CD</b> and <b>Terraform</b></li>
             </ul>
-          </div>
-          {/* Job 2 */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-teal-400 transition-shadow">
-            <h3 className="text-xl font-semibold text-gray-100">Software Engineer Intern</h3>
-            <p className="text-gray-400">Resilinc</p>
-            <p className="text-sm text-gray-500">May 2022 - Aug 2022</p>
-            <p className="text-gray-300 mt-2">
-              Assisted in designing and implementing responsive user interfaces using React and Tailwind CSS.
-            </p>
           </div>
         </div>
       </motion.section>
@@ -366,7 +370,7 @@ export default function Home() {
             LinkedIn
           </a>
           <a
-            href="https://github.com/your-profile"
+            href="https://github.com/AmanShaikh7"
             target="_blank"
             className="text-green-400 hover:underline mx-2"
           >
